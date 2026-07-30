@@ -3,6 +3,11 @@
 # user pressed Stop or sent a mid-task message. The relay answers in the
 # PreToolUse JSON protocol (deny + reason) or with nothing.
 #
+# The key rides the X-Pixy-Key header — at mcp.pixydesignapp.com it is also
+# what routes to prod or sandbox (pxs_ keys). The body carries the method for
+# the PIXY_RELAY escape hatch (posting straight at an app origin, no nginx
+# X-Method stamp).
+#
 # FAIL OPEN, ALWAYS: a dead or slow relay must never wedge a coding session.
 # The harness fails CLOSED if a hook times out, so this script guarantees its
 # own exit well inside the hook timeout (curl capped at 2s) and exits 0 on
@@ -10,11 +15,12 @@
 
 [ -z "$PIXY_KEY" ] && exit 0
 
-URL="${PIXY_RELAY:-https://pixydesignapp.com}"
+URL="${PIXY_RELAY:-https://mcp.pixydesignapp.com/hook}"
 
 OUT=$(curl -sS --max-time 2 -X POST "$URL" \
 	-H 'Content-Type: application/json' \
-	-d "{\"method\":\"chat.hook\",\"key\":\"$PIXY_KEY\"}" 2>/dev/null) || exit 0
+	-H "X-Pixy-Key: $PIXY_KEY" \
+	-d '{"method":"chat.hook"}' 2>/dev/null) || exit 0
 
 case "$OUT" in
 	*permissionDecision*) printf '%s' "$OUT" ;;
