@@ -1,0 +1,23 @@
+#!/bin/bash
+# Pixy PreToolUse gate: before each Edit/Write/Bash, ask the relay whether the
+# user pressed Stop or sent a mid-task message. The relay answers in the
+# PreToolUse JSON protocol (deny + reason) or with nothing.
+#
+# FAIL OPEN, ALWAYS: a dead or slow relay must never wedge a coding session.
+# The harness fails CLOSED if a hook times out, so this script guarantees its
+# own exit well inside the hook timeout (curl capped at 2s) and exits 0 on
+# every path. Output is forwarded only when it carries a real decision.
+
+[ -z "$PIXY_KEY" ] && exit 0
+
+URL="${PIXY_RELAY:-https://pixydesignapp.com}"
+
+OUT=$(curl -sS --max-time 2 -X POST "$URL" \
+	-H 'Content-Type: application/json' \
+	-d "{\"method\":\"chat.hook\",\"key\":\"$PIXY_KEY\"}" 2>/dev/null) || exit 0
+
+case "$OUT" in
+	*permissionDecision*) printf '%s' "$OUT" ;;
+esac
+
+exit 0

@@ -1,0 +1,15 @@
+{
+	"name": "pixy",
+	"owner": {
+		"name": "Pixy",
+		"url": "https://pixydesignapp.com"
+	},
+	"plugins": [
+		{
+			"name": "pixy",
+			"source": "./",
+			"description": "Design live on your real site — chat with Claude inside the page, edits become implemented code.",
+			"version": "0.1.0"
+		}
+	]
+}

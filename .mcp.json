@@ -1,0 +1,12 @@
+{
+	"mcpServers": {
+		"pixy": {
+			"type": "http",
+			"url": "${PIXY_MCP:-https://mcp.pixydesignapp.com}",
+			"headers": {
+				"X-Pixy-Key": "${PIXY_KEY}"
+			},
+			"timeout": 120000
+		}
+	}
+}
