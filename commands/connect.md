@@ -2,22 +2,62 @@
 description: Start a Pixy live session — design in your page, Claude builds on "go"
 ---
 
-This file is the COMPLETE connect instruction. Do not load any skill, do not
-read plugin or skill files, never search `~/.claude` or the plugin cache.
-Connect is a cold start: **three tool calls, pixy_wait armed in ~15 seconds.**
+This file is the COMPLETE instruction for connecting AND for wiring a
+project that isn't wired yet. Do not load any skill, do not read plugin or
+skill files, never search `~/.claude` or the plugin cache.
 
-1. Run `bash .claude/pixy-connect` (allowlisted, written by setup). It
-   prints the project state (url, server, tag, origin) and `SERVER_UP` or
-   `SERVER_DOWN`.
-   - `NO_STATE` → this project isn't set up: invoke the `pixy:setup` skill,
-     then come back here.
-   - `SERVER_DOWN` and `server` is a command → start it (background), go on.
-   - `SERVER_DOWN` and `server` is `"external"` → one line asking the user
-     to start their server; re-run the preflight when they say it's up.
-2. Open `url` in the browser — the user is switching there now.
-3. Call `pixy_wait` with `all: true` once; leftovers from a previous session
-   get one compact mention via `pixy_say`. Then loop. If pairing happened in
-   this same session, pass `key: "<the key>"` on every pixy tool call.
+**Read `.claude/pixy.json` and branch on it. That file is the only thing
+you inspect before acting.** No searching the project, no reading
+`package.json`, no grepping for `pixy.mjs`, no looking for a dev command or
+a URL — every one of those answers is in that file or comes from the user.
+There is nothing to discover.
+
+## No file → pair
+
+1. Ask the user one question: which URL is the page they want to design
+   on. Nothing else, and don't guess it from the project.
+2. Run, from the project root:
+
+   ```bash
+   curl -fsSL https://mcp.pixydesignapp.com/setup | bash -s -- --url "<their url>"
+   ```
+
+   Add `--sandbox` only if the user says they're on sandbox.
+3. **`PAIRING <link>`** → show the user the one line it printed, then
+   re-run the same command plus `--wait` (give the Bash call a 600000ms
+   timeout). That run blocks on their approval and writes
+   `.claude/settings.json` and `.claude/pixy.json`. `PAIR_PENDING` → one
+   line nudging them, re-run with `--wait`. `PAIR_UNAVAILABLE` → ask for a
+   key from the dashboard, re-run with `--key <the key>`.
+4. Then continue at **`installed: false`** below.
+
+**Only ever pass `--key` with a key the user typed into chat.** Never one
+you found while looking around — a `px_…` in the project's own files
+belongs to whatever that project ships, and handing it over wires this
+project to the wrong account.
+
+## `installed: false` → wire the tag, then connect
+
+Your one edit. Put the tag the script printed into whatever produces the
+page head, dev-gated by the project's own idiom (`NODE_ENV ===
+"development"`, a dev template block, a server dev flag); no dev/prod split
+→ plain tag plus one line to the user that it ships until removed.
+
+Ask the user which file if it isn't obvious from what you already have
+open. Don't go looking — a wrong file here is worse than a question.
+
+Then set `installed: true` in `.claude/pixy.json` and add `"tag": "<the
+file>"` (uninstall needs it). Tell the user to restart their dev server if
+hot reload skips template or config files. Then connect.
+
+## `installed: true` → connect
+
+1. Open `url` in the browser and show the user the link — they're switching
+   there now.
+2. Call `pixy_wait` with `all: true` once; leftovers from a previous
+   session get one compact mention via `pixy_say`. Then loop. If pairing
+   happened in this same session, pass `key: "<the key>"` on every pixy
+   tool call — the header takes over after the user's next restart.
 
 ## The loop — design first, build on "go"
 

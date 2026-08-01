@@ -7,11 +7,12 @@ read plugin files.
 
 1. Remove the script tag from the file recorded in `.claude/pixy.json`
    (`tag`); if `"manual"`, tell the user where they put it.
-2. From `.claude/settings.json` remove: `env.PIXY_KEY`, the allow rules
-   setup added, `enabledPlugins["pixy@pixy"]`, and
+2. From `.claude/settings.json` remove: `env.PIXY_KEY`, the two `mcp__…`
+   allow rules pairing added, `enabledPlugins["pixy@pixy"]`, and
    `extraKnownMarketplaces.pixy`. Leave everything else — including
    `defaultMode` — untouched.
-3. Delete `.claude/pixy.json` and `.claude/pixy-connect`.
+3. Delete `.claude/pixy.json` (and `.claude/pixy-connect` or
+   `.claude/pixy-pair.json` if an older or interrupted run left them).
 4. Say: the plugin unloads on the next restart; the project key still
    exists at https://pixydesignapp.com/@my — delete it there to kill old
    tags.
