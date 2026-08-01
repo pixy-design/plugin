@@ -9,7 +9,7 @@
 			"name": "pixy",
 			"source": "./",
 			"description": "Design live on your real site — chat with Claude inside the page, edits become implemented code.",
-			"version": "0.2.2"
+			"version": "0.3.0"
 		}
 	]
 }
