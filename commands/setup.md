@@ -27,12 +27,16 @@ click.
    (merged: key, allowlist, acceptEdits), `.claude/pixy-connect`,
    `.claude/pixy.json`, and verifies both ends. Its output is a fixed
    summary with a `NEXT:` line — follow that line literally.
-3. **`NEED_KEY`** → call `pixy_pair` (context: folder, git remote, dev
-   URL), show the link — one line: "Connect this project to your Pixy
-   account: {link}" — poll `pixy_pair` (code + secret) every ~5s until
-   approved, then re-run the script with `--key <the key>`. Link dead
-   after 10 min → restart pairing once, then ask for the key
-   (https://pixydesignapp.com/@my).
+3. **`PAIRING <link>`** → the script started the pairing itself; you do not
+   call `pixy_pair` and you do not poll. Show the user the one line it
+   printed — "Connect this project to your Pixy account: {link}" — then
+   re-run the same command plus `--wait`. That run blocks on their
+   approval and finishes setup in one go (give the Bash call a 600000ms
+   timeout). `PAIR_PENDING` → they haven't clicked yet: one line nudging
+   them, re-run with `--wait`. `PAIR_UNAVAILABLE` → ask for a key from
+   https://pixydesignapp.com/@my and re-run with `--key <the key>`. A key
+   that has gone stale needs nothing from you either — the script clears
+   it and re-pairs in the same run.
 4. **`TAG_MISSING`** → your one edit: insert the tag (the script printed
    the exact element) into the page head, dev-gated by the project's own
    idiom (`NODE_ENV === "development"`, a dev template block, a server dev
@@ -44,5 +48,8 @@ click.
    flags plus `--tag <file>`) to re-verify.
 5. **`TAG_OK`** → done: tell the user to restart Claude Code once (arms
    the key and permissions), then `/pixy`. If the key was already armed at
-   session start, offer to connect right away instead. `BAD_KEY` → the key
-   is stale — pair again (step 3).
+   session start, offer to connect right away instead.
+
+Every run ends in one of exactly two places — `TAG_MISSING` (step 4) or
+`TAG_OK` (step 5). Anything else is the script still waiting on the user's
+click, and the answer is always to show the link and re-run with `--wait`.
