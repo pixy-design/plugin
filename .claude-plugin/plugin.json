@@ -1,7 +1,7 @@
 {
 	"name": "pixy",
 	"displayName": "Pixy",
-	"version": "0.6.0",
+	"version": "0.6.1",
 	"description": "Design live on your real site. Chat with Claude inside the page, every visual tweak becomes a task it implements in source.",
 	"author": {
 		"name": "Pixy",

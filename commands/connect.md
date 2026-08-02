@@ -14,22 +14,23 @@ There is nothing to discover.
 
 ## No file → pair
 
-1. Ask the user one question: which URL is the page they want to design
-   on. Nothing else, and don't guess it from the project.
-2. Run, from the project root:
+**Ask nothing. Not the URL, not the dev command, not sandbox.** The user
+types the page URL on the approve page, where they already are, and it
+comes back with the key.
+
+1. Run, from the project root:
 
    ```bash
-   curl -fsSL https://mcp.pixydesignapp.com/setup | bash -s -- --url "<their url>"
+   curl -fsSL https://mcp.pixydesignapp.com/setup | bash -s --
    ```
 
-   Add `--sandbox` only if the user says they're on sandbox.
-3. **`PAIRING <link>`** → show the user the one line it printed, then
+2. **`PAIRING <link>`** → show the user the one line it printed, then
    re-run the same command plus `--wait` (give the Bash call a 600000ms
    timeout). That run blocks on their approval and writes
    `.claude/settings.json` and `.claude/pixy.json`. `PAIR_PENDING` → one
    line nudging them, re-run with `--wait`. `PAIR_UNAVAILABLE` → ask for a
    key from the dashboard, re-run with `--key <the key>`.
-4. Then continue at **`installed: false`** below.
+3. Then continue at **`installed: false`** below.
 
 **Only ever pass `--key` with a key the user typed into chat.** Never one
 you found while looking around — a `px_…` in the project's own files
