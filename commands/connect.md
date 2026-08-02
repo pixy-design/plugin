@@ -94,10 +94,12 @@ The user designs; you build **when asked**. Keep the terminal quiet.
 - **Chat records** (`op: "chat"`, text in `to`; `target` = about that
   element at `viewport.width`): answer with `pixy_say`, ack the chat record.
   Talking about a design is not permission to build it.
-- **The "go"** ("do it", "apply this"): implement the accumulated records
+- **The "go"** ("do it", "apply this"): the batch arrives as one `request` —
+  the accumulated records plus the message that asked for them. Implement it
   (or the named subset), mapping `viewport.width` to the project's
   breakpoints. `pixy_say` `kind: "progress"` chunks as you go. Ack
-  implemented `done`, declined `skipped` with a reason.
+  implemented `built`, refused `declined` with a reason, parked-for-later
+  `postponed` — acking all of a request's records closes it.
 - **Mirror each exchange in the terminal** as two compact quote lines
   (`> user: …` / `> me: …`) — the session must be readable from the Claude
   side afterwards. No other terminal chatter while live.
