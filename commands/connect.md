@@ -14,28 +14,28 @@ There is nothing to discover.
 
 ## No file → pair
 
-**Ask nothing. Not the URL, not the dev command, not sandbox.** The user
-types the page URL on the approve page, where they already are, and it
-comes back with the key.
+**Ask nothing.** Not the URL, not the dev command, not which file holds the
+head. Run, from the project root:
 
-1. Run, from the project root:
+```bash
+curl -fsSL https://mcp.pixydesignapp.com/setup | bash -s --
+```
 
-   ```bash
-   curl -fsSL https://mcp.pixydesignapp.com/setup | bash -s --
-   ```
-
-2. **`PAIRING <link>`** → show the user the one line it printed, then
-   re-run the same command plus `--wait` (give the Bash call a 600000ms
-   timeout). That run blocks on their approval and writes
-   `.claude/settings.json` and `.claude/pixy.json`. `PAIR_PENDING` → one
-   line nudging them, re-run with `--wait`. `PAIR_UNAVAILABLE` → ask for a
-   key from the dashboard, re-run with `--key <the key>`.
-3. Then continue at **`ready: false`** below.
+**`PAIRING <link>`** → show the user the one line it printed, then re-run
+the same command plus `--wait` (give the Bash call a 600000ms timeout).
+That run blocks on their approval and writes `.claude/pixy.json`.
+`PAIR_PENDING` → one line nudging them, re-run with `--wait`.
+`PAIR_UNAVAILABLE` → ask for a key from the dashboard, re-run with `--key
+<the key>`.
 
 **Only ever pass `--key` with a key the user typed into chat.** Never one
 you found while looking around — a `px_…` in the project's own files
 belongs to whatever that project ships, and handing it over wires this
-project to the wrong account.
+project to the wrong account. The key you were given lives in exactly two
+places: `.claude/pixy.json`, and the tag. Never copy it into
+`settings.json`, an env var, a `.env`, or any config of the project's own.
+
+Then continue at **`ready: false`**.
 
 ## `ready: false` → wire the tag, then connect
 
@@ -44,21 +44,31 @@ page head, dev-gated by the project's own idiom (`NODE_ENV ===
 "development"`, a dev template block, a server dev flag); no dev/prod split
 → plain tag plus one line to the user that it ships until removed.
 
-Ask the user which file if it isn't obvious from what you already have
-open. Don't go looking — a wrong file here is worse than a question.
+You're the one working in this codebase — you know which file renders the
+head and which URL the project serves on. Decide, don't ask, and don't turn
+it into an expedition: the answer is in what you already have open, or one
+look at the obvious file.
 
-Then set `ready: true` in `.claude/pixy.json` and add `"tag": "<the
-file>"` (uninstall needs it). Tell the user to restart their dev server if
-hot reload skips template or config files. Then connect.
+Then, in the same breath, write into `.claude/pixy.json`:
+
+- `"url"` — the page you'll tell the user to open
+- `"tag"` — the file you just edited, so uninstall is a clean removal and
+  not a hunt
+- `"ready": true`
+
+Tell the user to restart their dev server if hot reload skips template or
+config files. Then connect.
 
 ## `ready: true` → connect
 
-1. Open `url` in the browser and show the user the link — they're switching
-   there now.
+1. Give the user the `url` as a link to follow, and open it in the browser.
+   **Do not check whether the tag is really on the page** — no curl, no
+   fetch, no grep. It was wired; if something is off the user sees it on
+   the page in front of them, which is faster than any check you could run.
 2. Call `pixy_wait` with `all: true` once; leftovers from a previous
-   session get one compact mention via `pixy_say`. Then loop. If pairing
-   happened in this same session, pass `key: "<the key>"` on every pixy
-   tool call — the header takes over after the user's next restart.
+   session get one compact mention via `pixy_say`. Then loop. Pass `key:
+   "<the key from pixy.json>"` on every pixy tool call — that file is the
+   only place it lives, so it never becomes ambient.
 
 ## The loop — design first, build on "go"
 
