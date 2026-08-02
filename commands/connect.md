@@ -30,14 +30,14 @@ comes back with the key.
    `.claude/settings.json` and `.claude/pixy.json`. `PAIR_PENDING` → one
    line nudging them, re-run with `--wait`. `PAIR_UNAVAILABLE` → ask for a
    key from the dashboard, re-run with `--key <the key>`.
-3. Then continue at **`installed: false`** below.
+3. Then continue at **`ready: false`** below.
 
 **Only ever pass `--key` with a key the user typed into chat.** Never one
 you found while looking around — a `px_…` in the project's own files
 belongs to whatever that project ships, and handing it over wires this
 project to the wrong account.
 
-## `installed: false` → wire the tag, then connect
+## `ready: false` → wire the tag, then connect
 
 Your one edit. Put the tag the script printed into whatever produces the
 page head, dev-gated by the project's own idiom (`NODE_ENV ===
@@ -47,11 +47,11 @@ page head, dev-gated by the project's own idiom (`NODE_ENV ===
 Ask the user which file if it isn't obvious from what you already have
 open. Don't go looking — a wrong file here is worse than a question.
 
-Then set `installed: true` in `.claude/pixy.json` and add `"tag": "<the
+Then set `ready: true` in `.claude/pixy.json` and add `"tag": "<the
 file>"` (uninstall needs it). Tell the user to restart their dev server if
 hot reload skips template or config files. Then connect.
 
-## `installed: true` → connect
+## `ready: true` → connect
 
 1. Open `url` in the browser and show the user the link — they're switching
    there now.
