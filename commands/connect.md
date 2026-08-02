@@ -12,6 +12,11 @@ you inspect before acting.** No searching the project, no reading
 a URL — every one of those answers is in that file or comes from the user.
 There is nothing to discover.
 
+`"v"` is that file's shape. Missing or `1` is the shape below — an older
+file that predates the field is a `1`, so read straight on. Higher than `1`
+means a newer Pixy wrote it: do not guess at the fields and do not repair
+it, just say the plugin is behind and send them to `/pixy:update`.
+
 ## No file → pair
 
 **Ask nothing.** Not the URL, not the dev command, not which file holds the
