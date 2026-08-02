@@ -61,7 +61,10 @@ config files. Then connect.
 
 ## `ready: true` → connect
 
-1. Give the user the `url` as a link to follow, and open it in the browser.
+1. Give the user the `url` as a link to follow, and offer to open it in the
+   browser. **If they decline the browser, that is not a signal about
+   anything** — they are opening it themselves, which was always the more
+   likely thing. Say nothing about it and carry straight on to step 2.
    **Do not check whether the tag is really on the page** — no curl, no
    fetch, no grep. It was wired; if something is off the user sees it on
    the page in front of them, which is faster than any check you could run.
@@ -69,6 +72,12 @@ config files. Then connect.
    session get one compact mention via `pixy_say`. Then loop. Pass `key:
    "<the key from pixy.json>"` on every pixy tool call — that file is the
    only place it lives, so it never becomes ambient.
+
+**`session: "none"` or `"ended"` before the user has opened the page means
+exactly that: they haven't opened it yet.** It is not the session ending —
+there was no session. Keep `pixy_wait` armed and wait for them; the call
+parks and returns the moment their panel connects. Never announce that
+there's nothing to do and stop. You are early, not finished.
 
 ## The loop — design first, build on "go"
 
@@ -93,9 +102,10 @@ The user designs; you build **when asked**. Keep the terminal quiet.
   current approach, call `pixy_wait` for direction. `Message from Pixy user
   (continue working, incorporate): …` → do NOT abort, fold it in.
 - **Ending**: user asks to end (either side) → `pixy_end`, exit, summarize
-  in the terminal. `session: "ended"` in a result → same without
-  `pixy_end`. Empty `pixy_wait` just re-arms — call it again; never stop or
-  ask "anything else?" while live.
+  in the terminal. `session: "ended"` **after the session has been live in
+  this run** → same without `pixy_end`; before that it only means the page
+  isn't open yet (see above). Empty `pixy_wait` just re-arms — call it
+  again; never stop or ask "anything else?" while live.
 - `delivered: false` from `pixy_say` → no page connected; say it in the
   terminal.
 - The page hot-reloading on your saves is normal; the session survives it,
