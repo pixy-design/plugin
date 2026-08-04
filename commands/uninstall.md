@@ -21,4 +21,4 @@ plugin left installed, that is `/pixy:disable` — say so and stop.
    interrupted run left them — the last two hold a key).
 4. Say: the plugin unloads on the next restart; other projects still
    carrying a tag will go inert with it gone. The project key still exists
-   at https://pixydesignapp.com/@my — delete it there to kill old tags.
+   at https://pixydesignapp.com/my — delete it there to kill old tags.

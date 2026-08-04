@@ -41,7 +41,7 @@ curl -s -m 15 -X POST "$(python3 -c 'import json;print(json.load(open(".claude/p
 Then delete `.claude/pixy-report.json` — it holds the key.
 
 No `.claude/pixy.json` → no key to send with. Point them at
-https://pixydesignapp.com/@my and stop.
+https://pixydesignapp.com/my and stop.
 
 ## 3. Report back
 

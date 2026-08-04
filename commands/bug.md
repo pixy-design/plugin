@@ -44,4 +44,4 @@ project (`/pixy:connect`), and stop; do not send it unattributed.
 
 `"ok": true` → one line: sent, and the project it came from. Anything else →
 say it failed and offer the message back so the user can paste it at
-https://pixydesignapp.com/@my. Never retry in a loop.
+https://pixydesignapp.com/my. Never retry in a loop.

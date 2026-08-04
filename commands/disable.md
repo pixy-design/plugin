@@ -14,5 +14,5 @@ say so and stop rather than doing half of each.
    `.claude/pixy-pair.json` or `.claude/pixy-report.json` if an older or
    interrupted run left them — the last two hold a key).
 3. Say: `/pixy:connect` wires it again from scratch; the project key still
-   exists at https://pixydesignapp.com/@my — delete it there if you want
+   exists at https://pixydesignapp.com/my — delete it there if you want
    any tag still carrying it to go dead.
