@@ -30,15 +30,17 @@ curl -fsSL https://mcp.pixydesignapp.com/setup | bash -s --
 the same command plus `--wait` (give the Bash call a 600000ms timeout).
 That run blocks on their approval and writes `.claude/pixy.json`.
 `PAIR_PENDING` → one line nudging them, re-run with `--wait`.
-`PAIR_UNAVAILABLE` → ask for a key from the dashboard, re-run with `--key
-<the key>`.
+`PAIR_UNAVAILABLE` → ask for both keys from the dashboard, re-run with
+`--key <agent key px_sk_…> --tag-key <script key px_…>`.
 
 **Only ever pass `--key` with a key the user typed into chat.** Never one
 you found while looking around — a `px_…` in the project's own files
 belongs to whatever that project ships, and handing it over wires this
-project to the wrong account. The key you were given lives in exactly two
-places: `.claude/pixy.json`, and the tag. Never copy it into
-`settings.json`, an env var, a `.env`, or any config of the project's own.
+project to the wrong account. Two keys, two homes, never swapped: the
+agent key (`px_sk_…`, private) lives in `.claude/pixy.json` and nowhere
+else; the tag key (`tag_key`, public) is what the script tag carries.
+Never copy either into `settings.json`, an env var, a `.env`, or any
+config of the project's own.
 
 Then continue at **`ready: false`**.
 
